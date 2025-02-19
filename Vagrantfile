@@ -193,7 +193,7 @@ Vagrant.configure("2") do |config|
 
     apt-get -y install dkms
     #apt-get -y install virtualbox-guest
-    apt-get -y install virtualbox-guest-dkms
+    #apt-get -y install virtualbox-guest-dkms
     apt-get -y install virtualbox-guest-utils    
     apt-get -y install virtualbox-guest-additions-iso
        
@@ -306,10 +306,11 @@ Vagrant.configure("2") do |config|
 
     echo ""
     echo "installing secure network utils"
-    apt-get -y install gnutls
-    apt-get -y install openssh
+    apt-get -y install ssh
     apt-get -y install openssl
-    apt-get -y install openssl-dev
+    apt-get -y install gnutls-bin
+    apt-get -y install libssl-dev
+    apt-get -y install libtls-dev
     apt-get -y install stunnel
 
     # gpg is v1. gnupg is v2
