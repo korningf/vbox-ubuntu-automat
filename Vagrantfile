@@ -71,8 +71,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider "virtualbox" do |vb|
      
-     # Custom VM name "ubuntu-jammy-automat"
-     vb.name = "ubuntu-jammy-automat"
+     # Custom VM name "vbox-ubuntu-automat"
+     vb.name = "vbox-ubuntu-automat"
      
      # Display the VirtualBox GUI when booting the machine
      vb.gui = true
