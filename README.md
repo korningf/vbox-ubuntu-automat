@@ -1,12 +1,12 @@
 
 ═══════════════════════════════════════════════════════════════════════
-# Vagrant-ubuntu-manufakture
+# Manufakture vbox-ubuntu-automat
 ═══════════════════════════════════════════════════════════════════════
 
 <code> 
 
 	#=============================================================================#
-	# Manufakture-Vagrant-Ubuntu Full-Stack Cloud Developer Box
+	# Manufakture vbox-ubuntu-automat - Baremetal Base Box
 	#-----------------------------------------------------------------------------#
 
                                   _____        __      __                        
@@ -44,7 +44,7 @@
 # Operation
 ───────────────────────────────────────────────────────────────────────
 	
-	vagarnt box list
+	vagrant box list
 	
 	vagrant ssh
 	
@@ -55,7 +55,7 @@
 	
 	vagrant box remove  
 	
-	vboxmanage ungregistervm ubuntu-jammy-manufakture --delete-all
+	vboxmanage ungregistervm ubuntu-jammy-automat --delete-all
 	
 	
 	
