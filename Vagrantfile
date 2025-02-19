@@ -71,8 +71,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider "virtualbox" do |vb|
      
-     # Custom VM name "ubuntu-jammy-faktory"
-     vb.name = "ubuntu-jammy-faktory"
+     # Custom VM name "ubuntu-jammy-automat"
+     vb.name = "ubuntu-jammy-automat"
      
      # Display the VirtualBox GUI when booting the machine
      vb.gui = true
@@ -146,7 +146,7 @@ Vagrant.configure("2") do |config|
   #--------------------------------------------------------------------------------------#
   # Directories: configure directories for mounting shared folders 
   #--------------------------------------------------------------------------------------#
-  # config.vm.provision "shell", "mkdir -p /work/faktory"
+  # config.vm.provision "shell", "mkdir -p /work/automat"
   #======================================================================================#
   config.vm.provision "shell", inline: <<-SHELL
 
@@ -174,7 +174,8 @@ Vagrant.configure("2") do |config|
 
     echo ""  
     echo "adding apt repository tools"
-    apt-get -y install apt-transport-https ca-certificates curl gpg
+    apt-get -y install apt-transport-https ca-certificates
+    apt-get -y install curl gnupg
     apt-get -y install software-properties-common python-software-properties
     #apt-get -y upgrade
     apt-get update
@@ -247,7 +248,7 @@ Vagrant.configure("2") do |config|
 
     echo ""  
     echo "creating source directories"
-    mkdir -p /mnt/work/faktory  
+    mkdir -p /mnt/work/automat  
         
 
     #========================================================================#
@@ -310,8 +311,10 @@ Vagrant.configure("2") do |config|
     apt-get -y install openssl
     apt-get -y install openssl-dev
     apt-get -y install stunnel
+
+    # gpg is v1. gnupg is v2
     #apt-get -y install gpg
-    
+    #apt-get -y install gnupg    
 
     # ?
     # Check this - common libraries for FIPS security compliance
@@ -338,318 +341,6 @@ Vagrant.configure("2") do |config|
     apt-get -y install vim
     #apt-get -y install nano
 
-
-
-
-    #========================================================================#
-    # Development
-    #========================================================================#
-
-    
-    echo ""
-    echo "installing common dev utils"
-    apt-get -y install bc
-    apt-get -y install dos2unix
-
-    echo ""
-    echo "installing source control tools"
-    apt-get -y install diffutils
-    apt-get -y install patchutils
-    apt-get -y install git
-
-    
-    # ?
-    # Check this
-    # We definitely want GNU POSIX, glibc, java, scala, and R
-    # We will most certainly need crypto, perl, python, ruby.
-    # Do we need go, rust, cargo, possibly erlang or haskell ?
-    # ?
-
-
-    #------------------------------------------------------------------------#
-    # Glibc C / C++
-    #------------------------------------------------------------------------#
-
-    echo ""
-    echo "installing GNU libc"
-    apt-get -y install libc-bin
-    apt-get -y install libc6
-    apt-get -y install libc6-dev
-    
-    echo ""
-    echo "installing basic C and C++ compiler"
-    apt-get -y install gcc
-    apt-get -y install g++
-    apt-get -y install gdb    
-    
-    echo ""
-    echo "installing basic compiler tools"
-    apt-get -y install libtool
-    apt-get -y install binutils
-    apt-get -y install make
-    apt-get -y install automake
-    apt-get -y install autoconf
-   
-
-    #------------------------------------------------------------------------#
-    # Misc libs, EBNF grammar tools, processors
-    #------------------------------------------------------------------------#
-
-    echo ""
-    echo "installing grammar parser tools"
-    apt-get -y install guile
-    apt-get -y install bison
-    apt-get -y install flex
-    apt-get -y install swig
-    apt-get -y install ctags
-
-
-    echo ""
-    echo "installing common io protocols"
-    apt-get -y installd cpio
-    apt-get -y install protobuf-compiler
-
-    
-    echo ""
-    echo "installing dependency libs"
-    #apt-get -y install libreadline-dev
-    
-
-    
-    #------------------------------------------------------------------------#
-    # Java
-    #------------------------------------------------------------------------#
-
-    echo ""
-    echo "installing Java compilation tools"
-    echo ""
-    apt-get update
-    apt-get -y install openjdk-21-jdk-headless
-    apt-get -y install maven
-   
-
-    #------------------------------------------------------------------------#
-    # Scala
-    #------------------------------------------------------------------------#
-
-    echo ""
-    echo "installing Scala functional language tools"
-     apt-get -y install scala
-    
-    
-    #------------------------------------------------------------------------#
-    # R-lang 
-    #------------------------------------------------------------------------#
-
-    echo ""
-    echo "installing R functional language tools"
-    apt-get install -y r-base
-   
-
-    #------------------------------------------------------------------------#
-    # Perl (for apache, misc, cloud ops, dev-ops)
-    #------------------------------------------------------------------------#
-
-    echo ""
-    echo "installing perl development tools"
-    apt-get -y install perl
-    apt-get -y install cpanminus
-
-
-    #------------------------------------------------------------------------#
-    # PHP (for apache, composer, cloud ops, dev-ops)
-    #------------------------------------------------------------------------#
-
-    echo ""
-    echo "installing PHP development tools"
-    apt-get -y install php
-
-
-
-    #------------------------------------------------------------------------#
-    # Python (for aws-cli, cloud ops, dev-ops)
-    #------------------------------------------------------------------------#
-
-    # python required for many tools, including aws-cli
-
-    echo ""
-    echo "installing python development tools"
-    apt-get -y install python
-    apt-get -y install python-dev
-    apt-get -y install python-pip
-    # patch broken pip by using easy_install
-    easy_install pip
-    cp /usr/local/bin/pip /usr/bin
-    pip install --upgrade pip
-    
-
-    
-    #------------------------------------------------------------------------#
-    # Ruby (for vagrant, puppet, cloud ops, dev-ops)
-    #------------------------------------------------------------------------#
-        
-    # ruby,gems, rails required for vagrant, puppet
-
-    echo ""
-    echo "installing ruby development tools"
-    apt-add-repository ppa:brightbox/ruby-ng
-    apt-get update
-    
-    apt-get -y install ruby ruby-dev
-    apt-get -y install gems rubygems-integration
-    apt-get -y install ruby-rails ruby-railties
-    apt-get -y install ruby-builder ruby-bundler
-
-    
-    #------------------------------------------------------------------------#
-    # Go-Lang (for docker, cloud-ops, dev-ops)
-    #------------------------------------------------------------------------#
-
-    
-    echo ""
-    echo "installing Go development tools"
-    apt-get update
-    apt-get -y install golang-go
-    
-
-
-    #========================================================================#
-    # Services, Servers, Runtimes
-    #========================================================================#
-
-
-    #------------------------------------------------------------------------#
-    # Databases
-    #------------------------------------------------------------------------#
-    
-#    echo ""
-#    echo "installing mysql and postgresql clients"
-#    apt-get -y install myresql-client postgresql-client
-
-
-    # ?
-    # Check this: mssql-cli may require a specific python version!
-    #
-    # see: https://pypi.org/project/mssql-cli/
-    # see: https://dbafromthecold.com/2022/05/13/install-mssql-cli-on-ubuntu-22-04/
-    # see: https://github.com/dbcli/mssql-cli/issues/531
-    # ?
-
-    echo ""
-    echo "installing msqsql client"
-    pip install --upgrade --force cli_helpers
-    pip install --upgrade --force tabulate
-    pip install mssql-cli
-    # apt-get -y install msqql-cli
-
-
-
-    #------------------------------------------------------------------------#
-    # Node.js
-    #------------------------------------------------------------------------#
-
-#     echo ""
-#     echo "installing nodejs engine"
-#     apt-get -y install nodejs
-#     apt-get -y install npm
-#     cd; touch install_nvm.sh; chmod a+x install_nvm.sh
-#     curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh > install_nvm.sh
-#     ./install+nvm.sh
-#     source ~/.profile
-
-
-
-
-    #========================================================================#
-    # Cloud Ops, Cluster Ops, Dev Ops
-    #========================================================================#
-
-
-
-    #------------------------------------------------------------------------#
-    # jquery, onigura (for aws-cli, cloud-ops, dev-ops)
-    #------------------------------------------------------------------------#
-
-    echo ""
-    echo "installing oniguruma regexp lib"
-    apt-get -y install libonig
-    apt-get -y install libonig-dev    
-    
-    
-    echo ""
-    echo "installing jq/yq json/yaml processors"
-    # jq json processor
-    apt-get -y install jq
-    # yq yaml processor (wrapper for jq)
-    pip install 'yq < 2.0.0'
-    
-
-  
-    #------------------------------------------------------------------------#
-    # Docker
-    #------------------------------------------------------------------------#
-
-    # Docker written in go
-       
-    # ?
-    # Check this
-    # If this is for a generic Jenkins faktory VM on kube,
-    # We may need an exotic docker-wihin-docker VM setup.
-    # At minimum we need a local docker engine + client.
-    # Do we also need kube-cli, AWS-cli, etc?
-    # ?
- 
-    echo ""
-    echo "configuring docker repostories"
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-    apt-get update
-    echo ""
-    echo "installing docker engine"
-    apt-get -y install docker.io
-
-
-    # Composer wriiten in php
-
-    apt-get -y install composer
-    
-
-    # Packer ?
-
-    #------------------------------------------------------------------------#
-    # Kubernetes
-    #------------------------------------------------------------------------#
-
-    # seems to install from ubuntu-20-xenial instead of ubuntu-22-jammy
-
-    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add
-    apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
-    apt-get update
-
-    #apt-get install -y containerd
-    #apt-get install -y kubeadm kubelet 
-
-    apt-get install -y kubectl
-
-
-    # Terraform ?
-
-
-    # KOps ?
-
-
-    # Helm ?
-
-
-
-    #------------------------------------------------------------------------#
-    # Amazon AWS
-    #------------------------------------------------------------------------#
-
-    echo ""
-    echo "installing AWS=client"
-    apt-get -y install awscli    
-        
         
 
 
