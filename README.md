@@ -55,7 +55,7 @@
 	
 	vagrant box remove  
 	
-	vboxmanage ungregistervm ubuntu-jammy-automat --delete-all
+	vboxmanage ungregistervm vbox-ubuntu-automat --delete-all
 	
 	
 	
