@@ -150,6 +150,11 @@ Vagrant.configure("2") do |config|
   #======================================================================================#
   config.vm.provision "shell", inline: <<-SHELL
 
+
+    #========================================================================#
+    # Machine
+    #========================================================================#
+
     echo ""  
     echo "resizing root filesystem"
     resize2fs /dev/sda1
@@ -160,6 +165,39 @@ Vagrant.configure("2") do |config|
     mkdir -p /vagrant
     mkdir -p /mnt/work
     
+
+
+    #------------------------------------------------------------------------#
+    # DNS
+    #------------------------------------------------------------------------#
+    
+    # sometimes on vbox windows, the local DNS fails to resolve apt repos
+    # the workaround is to ensure we always also check google nameservers
+    
+    echo ""  
+    echo "ensuring DNS nameservers"
+    echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+    echo "nameserver 8.8.4.4" >> /etc/resolv.conf    
+
+
+
+    #------------------------------------------------------------------------#
+    # APT keyrings
+    #------------------------------------------------------------------------#
+
+    # ensure we have a directory for external apt repsitory keyrings    
+    # /usr/share/keyrings/ for official ubuntu distro apt packages
+    # /etc/apt/keyrings/ for manually installed external packages
+    
+    echo ""
+    echo "ensuring keyring folders"
+    mkdir -p /usr/share/keyrings/
+    mkdir -p /etc/apt/keyrings/
+    
+
+    #------------------------------------------------------------------------#
+    # APT repos
+    #------------------------------------------------------------------------#
     
     echo ""  
     echo "registering package repositories"
@@ -172,26 +210,42 @@ Vagrant.configure("2") do |config|
     apt-get update
 
 
+    #------------------------------------------------------------------------#
+    # APT base
+    #------------------------------------------------------------------------#
+
     echo ""  
     echo "adding apt repository tools"
     apt-get -y install apt-transport-https ca-certificates
-    apt-get -y install curl gnupg
+    apt-get -y install curl gnupg lsb-release
     apt-get -y install software-properties-common python-software-properties
     #apt-get -y upgrade
     apt-get update
 
 
+    #------------------------------------------------------------------------#
+    # base box
+    #------------------------------------------------------------------------#
+
+    # at minimum we will need build-essentials as we want to cross-compile.
+    
     echo ""
-    echo "installing virtualbox extensions"
-    sudo apt -y install build-essential dkms linux-headers-$(uname -r)
+    echo "installing build essentials and headers"
+    sudo apt -y install build-essential linux-headers-$(uname -r)
+    #apt-get -y install dkms
     apt-get update
 
+
+    #------------------------------------------------------------------------#
+    # VBox guest
+    #------------------------------------------------------------------------#
 
     # ?
     # Check This - not sure it's required since we're forcing the version
     # ?
-
-    apt-get -y install dkms
+    
+    echo ""
+    echo "installing virtualbox extensions"
     #apt-get -y install virtualbox-guest
     #apt-get -y install virtualbox-guest-dkms
     apt-get -y install virtualbox-guest-utils    
@@ -233,14 +287,14 @@ Vagrant.configure("2") do |config|
   # @see https://wiki.ubuntulinux.org/wiki/Docker
 
   config.vm.provision "shell", inline: <<-SHELL
+    
+    
+    #========================================================================#
+    # System
+    #========================================================================#
   
     echo ""
     echo "configuring basic system"
-    cp /vagrant/motd                /etc
-    # todo certificates and credentials
-    # warning: do not overwrite the vagrant credentials (~/.ssh/authorized_keys)
-    # if using an ssh-agent, ssh-keys should already be preloaded (ssh-add -L) 
-            
 
     # ?
     # Check this - this was to copy stuff from the host into the box
@@ -248,12 +302,20 @@ Vagrant.configure("2") do |config|
 
     echo ""  
     echo "creating source directories"
-    mkdir -p /mnt/work/automat  
-        
+    mkdir -p /mnt/work/faktory  
+    
+    # motd
+    cp /vagrant/motd                /etc
 
-    #========================================================================#
-    # System
-    #========================================================================#
+    
+    # todo certificates and credentials
+    # warning: do not overwrite the vagrant credentials (~/.ssh/authorized_keys)
+    # if using an ssh-agent, ssh-keys should already be preloaded (ssh-add -L) 
+            
+
+    #------------------------------------------------------------------------#
+    # Sysutils
+    #------------------------------------------------------------------------#
 
     #apt-get update
 
@@ -262,6 +324,8 @@ Vagrant.configure("2") do |config|
     apt-get -y install syslinux
     apt-get -y install coreutils
     apt-get -y install util-linux
+    apt-get -y install locate
+    apt-get -y install tree
     #apt-get -y install procps
     #apt-get -y install iotop
         
@@ -338,11 +402,20 @@ Vagrant.configure("2") do |config|
 
     echo ""
     echo "installing console tools"
-    apt-get -y install ncurses
+    apt-get -y install libncurses-dev
+    apt-get -y install screen
     apt-get -y install vim
     #apt-get -y install nano
 
         
+
+
+    #------------------------------------------------------------------------#
+    # User profiles
+    #------------------------------------------------------------------------#
+
+    # TODO .bash .bashrc .profile, color xterm, ssh, ssh-agent, etc
+
 
 
     echo ""
