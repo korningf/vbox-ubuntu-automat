@@ -381,6 +381,12 @@ Vagrant.configure("2") do |config|
     #apt-get -y install gpg
     #apt-get -y install gnupg    
 
+
+    # password-store vault
+    apt-get -y install pass
+    apt-get -y install sshpass
+
+
     # ?
     # Check this - common libraries for FIPS security compliance
     # ?
